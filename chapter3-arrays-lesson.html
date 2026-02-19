@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 3: Arrays – Grade 11 IT</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --card: #1a2236;
+    --accent1: #00e5ff;
+    --accent2: #ff6b35;
+    --accent3: #a78bfa;
+    --accent4: #34d399;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --border: rgba(255,255,255,0.08);
+    --glow: 0 0 20px rgba(0,229,255,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 60px 0 40px;
+    text-align: center;
+    position: relative;
+  }
+
+  .badge {
+    display: inline-block;
+    background: rgba(0,229,255,0.1);
+    border: 1px solid rgba(0,229,255,0.3);
+    color: var(--accent1);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(135deg, #fff 30%, var(--accent1));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+
+  .hero-sub {
+    color: var(--muted);
+    font-size: 18px;
+    max-width: 580px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+  }
+
+  .outcomes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 60px;
+  }
+
+  .outcome-chip {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .outcome-chip:hover { border-color: var(--accent1); transform: translateY(-2px); }
+  .outcome-chip .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent1); flex-shrink: 0; margin-top: 4px;
+  }
+
+  /* ===== NAV TABS ===== */
+  .nav-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .tab-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+  .tab-btn:hover { border-color: var(--accent3); color: var(--accent3); }
+  .tab-btn.active { background: var(--accent1); border-color: var(--accent1); color: #0a0e1a; font-weight: 700; }
+
+  /* ===== SECTION ===== */
+  .section { display: none; }
+  .section.active { display: block; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform:none; } }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+  .section-intro {
+    color: var(--muted);
+    font-size: 15px;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: rgba(255,255,255,0.15); }
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-icon { font-size: 22px; }
+
+  /* Key terms highlight */
+  .kw { color: var(--accent1); font-family: 'Space Mono', monospace; font-size: 0.9em; }
+  .kw2 { color: var(--accent2); font-family: 'Space Mono', monospace; font-size: 0.9em; }
+  .kw3 { color: var(--accent4); font-family: 'Space Mono', monospace; font-size: 0.9em; }
+
+  /* ===== ARRAY VISUAL ===== */
+  .array-visual {
+    display: flex;
+    gap: 0;
+    margin: 20px 0;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .array-cell {
+    min-width: 70px;
+    border: 1px solid rgba(0,229,255,0.3);
+    background: rgba(0,229,255,0.05);
+    text-align: center;
+    padding: 12px 8px;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .array-cell:first-child { border-radius: 8px 0 0 8px; }
+  .array-cell:last-child { border-radius: 0 8px 8px 0; }
+  .array-cell.highlight { background: rgba(0,229,255,0.25); border-color: var(--accent1); box-shadow: var(--glow); }
+  .array-cell.found { background: rgba(52,211,153,0.25); border-color: var(--accent4); }
+  .array-cell.searching { background: rgba(255,107,53,0.25); border-color: var(--accent2); animation: pulse 0.5s ease; }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+  .array-index {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .array-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent1);
+  }
+
+  /* ===== CODE BLOCK ===== */
+  .code-block {
+    background: #0d1117;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 20px 24px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    overflow-x: auto;
+    margin: 16px 0;
+  }
+
+  .c-keyword { color: #ff79c6; }
+  .c-type { color: #8be9fd; }
+  .c-string { color: #f1fa8c; }
+  .c-comment { color: #6272a4; font-style: italic; }
+  .c-number { color: #bd93f9; }
+  .c-var { color: #50fa7b; }
+  .c-func { color: #ffb86c; }
+
+  /* ===== DEFINITION BOX ===== */
+  .def-box {
+    border-left: 3px solid var(--accent3);
+    background: rgba(167,139,250,0.07);
+    padding: 16px 20px;
+    border-radius: 0 12px 12px 0;
+    margin: 16px 0;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .def-box strong { color: var(--accent3); }
+
+  /* ===== INTERACTIVE QUIZ ===== */
+  .quiz-q {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+  .quiz-q-text {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-opt {
+    padding: 13px 18px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 14px;
+    text-align: left;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .quiz-opt:hover:not(:disabled) { border-color: var(--accent3); background: rgba(167,139,250,0.1); }
+  .quiz-opt.correct { border-color: var(--accent4); background: rgba(52,211,153,0.15); color: var(--accent4); }
+  .quiz-opt.wrong { border-color: var(--accent2); background: rgba(255,107,53,0.1); color: var(--accent2); }
+  .quiz-opt:disabled { cursor: not-allowed; opacity: 0.7; }
+  .quiz-feedback { margin-top: 14px; font-size: 14px; line-height: 1.5; padding: 12px 16px; border-radius: 8px; display: none; }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct-fb { background: rgba(52,211,153,0.1); color: var(--accent4); border: 1px solid rgba(52,211,153,0.3); }
+  .quiz-feedback.wrong-fb { background: rgba(255,107,53,0.1); color: var(--accent2); border: 1px solid rgba(255,107,53,0.3); }
+
+  /* ===== SCORE ===== */
+  .score-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    height: 8px;
+    margin: 8px 0 24px;
+    overflow: hidden;
+  }
+  .score-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent1), var(--accent4));
+    border-radius: 100px;
+    transition: width 0.5s ease;
+  }
+
+  /* ===== ALGORITHM SIMULATOR ===== */
+  .sim-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .btn-primary { background: var(--accent1); color: #0a0e1a; font-weight: 700; }
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-secondary { background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+  .btn-secondary:hover { border-color: var(--accent3); color: var(--accent3); }
+  .btn-orange { background: var(--accent2); color: #fff; font-weight: 700; }
+  .btn-orange:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-purple { background: var(--accent3); color: #fff; font-weight: 700; }
+  .btn-purple:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  .sim-log {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    line-height: 1.9;
+    min-height: 100px;
+    max-height: 200px;
+    overflow-y: auto;
+    color: var(--muted);
+    margin-top: 16px;
+  }
+  .sim-log .log-found { color: var(--accent4); }
+  .sim-log .log-check { color: var(--accent1); }
+  .sim-log .log-swap { color: var(--accent2); }
+  .sim-log .log-info { color: var(--accent3); }
+
+  /* ===== PARALLEL ARRAYS ===== */
+  .parallel-wrap { overflow-x: auto; }
+  .pa-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 4px;
+    margin-top: 14px;
+  }
+
+  /* ===== GLOSSARY ===== */
+  .glossary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .glossary-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: transform 0.2s;
+  }
+  .glossary-item:hover { transform: translateY(-3px); }
+  .glossary-term { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 8px; }
+  .glossary-def { font-size: 14px; color: var(--muted); line-height: 1.5; }
+
+  /* ===== STEP GUIDE ===== */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step {
+    display: flex;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--accent1);
+    opacity: 0.3;
+    flex-shrink: 0;
+    line-height: 1;
+    width: 44px;
+  }
+  .step-content h4 { font-weight: 600; margin-bottom: 6px; }
+  .step-content p { color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+  /* ===== INFO TAG ===== */
+  .tag {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-right: 6px;
+    margin-bottom: 6px;
+  }
+  .tag-blue { background: rgba(0,229,255,0.1); color: var(--accent1); border: 1px solid rgba(0,229,255,0.3); }
+  .tag-orange { background: rgba(255,107,53,0.1); color: var(--accent2); border: 1px solid rgba(255,107,53,0.3); }
+  .tag-green { background: rgba(52,211,153,0.1); color: var(--accent4); border: 1px solid rgba(52,211,153,0.3); }
+  .tag-purple { background: rgba(167,139,250,0.1); color: var(--accent3); border: 1px solid rgba(167,139,250,0.3); }
+
+  /* ===== SCORE DISPLAY ===== */
+  .score-display {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  /* Input styled */
+  input[type="number"], input[type="text"] {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 9px 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    width: 100px;
+    transition: border-color 0.2s;
+  }
+  input:focus { border-color: var(--accent1); }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    text-align: center;
+    padding: 40px 0 60px;
+    color: var(--muted);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+    margin-top: 60px;
+  }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+  .warning-box {
+    border: 1px solid rgba(255,107,53,0.3);
+    background: rgba(255,107,53,0.05);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 14px;
+    margin: 12px 0;
+  }
+  .warning-box::before { content: '⚠️ '; }
+
+  .note-box {
+    border: 1px solid rgba(0,229,255,0.3);
+    background: rgba(0,229,255,0.05);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 14px;
+    margin: 12px 0;
+    line-height: 1.6;
+  }
+  .note-box::before { content: '💡 '; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 16px 0; }
+  th { background: rgba(0,229,255,0.1); color: var(--accent1); font-family: 'Space Mono', monospace; font-size: 12px; padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--muted); font-family: 'Space Mono', monospace; font-size: 12px; }
+  tr:hover td { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="hero">
+    <div class="badge">Grade 11 IT • Term 2</div>
+    <h1>Chapter 3: Arrays</h1>
+    <p class="hero-sub">Master arrays in Delphi — from declaration to sorting, searching, and parallel arrays. Interactive, hands-on, and exam-ready.</p>
+
+    <div class="outcomes-grid">
+      <div class="outcome-chip"><span class="dot"></span>Describe the concept of an array</div>
+      <div class="outcome-chip"><span class="dot"></span>Define the structure and syntax</div>
+      <div class="outcome-chip"><span class="dot"></span>Use different input sources</div>
+      <div class="outcome-chip"><span class="dot"></span>Perform calculations using arrays</div>
+      <div class="outcome-chip"><span class="dot"></span>Describe parallel arrays</div>
+      <div class="outcome-chip"><span class="dot"></span>Search using Linear & Binary search</div>
+      <div class="outcome-chip"><span class="dot"></span>Sort using Bubble & Selection sort</div>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="showSection('unit1')">📦 Unit 3.1: Arrays</button>
+      <button class="tab-btn" onclick="showSection('unit2')">🔍 Unit 3.2: Search & Sort</button>
+      <button class="tab-btn" onclick="showSection('unit3')">🔗 Unit 3.3: Parallel Arrays</button>
+      <button class="tab-btn" onclick="showSection('simulator')">⚙️ Algorithm Lab</button>
+      <button class="tab-btn" onclick="showSection('quiz')">🧠 Quiz</button>
+      <button class="tab-btn" onclick="showSection('glossary')">📖 Glossary</button>
+    </div>
+  </div>
+
+  <!-- ===================== UNIT 1 ===================== -->
+  <div id="unit1" class="section active">
+    <div class="section-title">Unit 3.1 – Introduction to Arrays</div>
+    <p class="section-intro">An <strong>array</strong> is a data structure that stores multiple values of the <em>same type</em> linked to a single variable name. Think of it like a row of labelled boxes — each box holds one value and has an index number.</p>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">🤔</span> Why Do We Need Arrays?</div>
+      <p style="color:var(--muted); font-size:14px; line-height:1.7; margin-bottom:14px;">Imagine storing 100 test scores. Without arrays you'd need:</p>
+      <div class="code-block">
+<span class="c-var">iScore1</span>, <span class="c-var">iScore2</span>, <span class="c-var">iScore3</span>, ... <span class="c-var">iScore100</span>: <span class="c-type">Integer</span>;
+<span class="c-comment">// 😩 100 separate variables — impossible to loop through!</span>
+      </div>
+      <p style="color:var(--muted); font-size:14px; line-height:1.7; margin-top:12px;">With an array, you only need <strong>one</strong> declaration and a loop:</p>
+      <div class="code-block">
+<span class="c-var">arrScores</span>: <span class="c-keyword">array</span>[<span class="c-number">1</span>..<span class="c-number">100</span>] <span class="c-keyword">of</span> <span class="c-type">Integer</span>;
+<span class="c-keyword">for</span> <span class="c-var">i</span> := <span class="c-number">1</span> <span class="c-keyword">to</span> <span class="c-number">100</span> <span class="c-keyword">do</span>
+  <span class="c-var">arrScores</span>[<span class="c-var">i</span>] := <span class="c-func">StrToInt</span>(<span class="c-func">InputBox</span>(<span class="c-string">'Score'</span>,<span class="c-string">'Enter score'</span>,<span class="c-string">''</span>));
+<span class="c-comment">// ✅ Clean, efficient, loopable!</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">🏗️</span> Array Declaration Syntax</div>
+      <div class="code-block">
+<span class="c-keyword">var</span>
+  <span class="c-var">arrayName</span>: <span class="c-keyword">array</span>[<span class="c-var">StartIndex</span>..<span class="c-var">LastIndex</span>] <span class="c-keyword">of</span> <span class="c-type">DataType</span>;
+      </div>
+      <table>
+        <tr><th>Component</th><th>Meaning</th><th>Example</th></tr>
+        <tr><td>arrayName</td><td>Name with arr prefix</td><td>arrNames, arrScores</td></tr>
+        <tr><td>StartIndex</td><td>First index position</td><td>1</td></tr>
+        <tr><td>LastIndex</td><td>Last index position</td><td>10</td></tr>
+        <tr><td>DataType</td><td>Type of all elements</td><td>String, Integer, Real</td></tr>
+      </table>
+      <p style="color:var(--muted);font-size:14px;margin-top:12px;"><strong>Real examples from your coursework:</strong></p>
+      <div class="code-block">
+<span class="c-var">arrNames</span>: <span class="c-keyword">array</span>[<span class="c-number">1</span>..<span class="c-number">20</span>] <span class="c-keyword">of</span> <span class="c-type">String</span>;
+<span class="c-var">arrAges</span>: <span class="c-keyword">array</span>[<span class="c-number">1</span>..<span class="c-number">120</span>] <span class="c-keyword">of</span> <span class="c-type">Integer</span>;
+<span class="c-var">arrAlphabet</span>: <span class="c-keyword">array</span>[<span class="c-number">1</span>..<span class="c-number">26</span>] <span class="c-keyword">of</span> <span class="c-type">Char</span>;
+<span class="c-var">arrProvinces</span>: <span class="c-keyword">array</span>[<span class="c-number">1</span>..<span class="c-number">9</span>] <span class="c-keyword">of</span> <span class="c-type">String</span>;
+<span class="c-comment">// Constant array (elements cannot change):</span>
+<span class="c-keyword">const</span>
+  <span class="c-var">arrDays</span>: <span class="c-keyword">array</span>[<span class="c-number">1</span>..<span class="c-number">7</span>] <span class="c-keyword">of</span> <span class="c-type">String</span> = (<span class="c-string">'Sun'</span>,<span class="c-string">'Mon'</span>,<span class="c-string">'Tue'</span>,<span class="c-string">'Wed'</span>,<span class="c-string">'Thur'</span>,<span class="c-string">'Fri'</span>,<span class="c-string">'Sat'</span>);
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">👀</span> Visualising an Array</div>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:20px;">Here is <span class="kw">arrNames</span> — a String array with 5 elements. Click a cell to inspect it!</p>
+      <div style="margin-top:24px;">
+        <div style="display:flex; gap:0; position:relative; padding-top:28px;" id="viz-array">
+          <!-- generated by JS -->
+        </div>
+      </div>
+      <div id="viz-info" style="margin-top:16px; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); min-height:24px;"></div>
+      <div class="note-box" style="margin-top:16px;">The <strong>index</strong> is the position of an element. <span class="kw">arrNames[1]</span> = 'Arhaan', <span class="kw">arrNames[3]</span> = 'Peter'. Always use square brackets!</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">📥</span> Populating an Array</div>
+      <div class="two-col">
+        <div>
+          <div class="tag tag-blue">Method 1</div>
+          <p style="color:var(--muted);font-size:13px;margin:8px 0 6px;">Assign fixed values directly:</p>
+          <div class="code-block" style="font-size:12px;">
+<span class="c-var">arrSchools</span>[<span class="c-number">1</span>] := <span class="c-string">'New Forest'</span>;
+<span class="c-var">arrSchools</span>[<span class="c-number">2</span>] := <span class="c-string">'Stanger High'</span>;
+<span class="c-var">arrSchools</span>[<span class="c-number">3</span>] := <span class="c-string">'Mountview High'</span>;
+          </div>
+        </div>
+        <div>
+          <div class="tag tag-orange">Method 2</div>
+          <p style="color:var(--muted);font-size:13px;margin:8px 0 6px;">Use InputBox + FOR-loop:</p>
+          <div class="code-block" style="font-size:12px;">
+<span class="c-keyword">for</span> <span class="c-var">i</span> := <span class="c-number">1</span> <span class="c-keyword">to</span> <span class="c-number">5</span> <span class="c-keyword">do</span>
+  <span class="c-var">arrScores</span>[<span class="c-var">i</span>] := <span class="c-func">StrToInt</span>(
+  <span class="c-func">InputBox</span>(<span class="c-string">'Score'</span>,
+    <span class="c-string">'Enter score'</span>,<span class="c-string">''</span>));
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">📤</span> Displaying Array Elements</div>
+      <div class="two-col">
+        <div>
+          <div class="tag tag-orange">❌ Inefficient</div>
+          <div class="code-block" style="font-size:12px;">
+<span class="c-func">memDisplay</span>.<span class="c-func">Lines</span>.<span class="c-func">Add</span>(<span class="c-func">IntToStr</span>(<span class="c-var">arrScore</span>[<span class="c-number">1</span>]));
+<span class="c-func">memDisplay</span>.<span class="c-func">Lines</span>.<span class="c-func">Add</span>(<span class="c-func">IntToStr</span>(<span class="c-var">arrScore</span>[<span class="c-number">2</span>]));
+<span class="c-func">memDisplay</span>.<span class="c-func">Lines</span>.<span class="c-func">Add</span>(<span class="c-func">IntToStr</span>(<span class="c-var">arrScore</span>[<span class="c-number">3</span>]));
+<span class="c-comment">// Imagine doing this for 100 items!</span>
+          </div>
+        </div>
+        <div>
+          <div class="tag tag-green">✅ Efficient</div>
+          <div class="code-block" style="font-size:12px;">
+<span class="c-keyword">for</span> <span class="c-var">i</span> := <span class="c-number">1</span> <span class="c-keyword">to</span> <span class="c-number">5</span> <span class="c-keyword">do</span>
+  <span class="c-func">memDisplay</span>.<span class="c-func">Lines</span>.<span class="c-func">Add</span>(
+    <span class="c-func">IntToStr</span>(<span class="c-var">arrScores</span>[<span class="c-var">i</span>]));
+<span class="c-comment">// Loop through all elements!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">➕➖</span> Inserting & Deleting Elements</div>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:16px;line-height:1.6;">When inserting at position 4, shift elements <strong>right first</strong> (starting from the last element). When deleting from position 3, shift elements <strong>left</strong>.</p>
+      <div class="two-col">
+        <div>
+          <div class="tag tag-blue">INSERT at position 4</div>
+          <div class="code-block" style="font-size:12px;">
+<span class="c-comment">// Shift right (last element first)</span>
+<span class="c-keyword">for</span> <span class="c-var">i</span> := <span class="c-number">10</span> <span class="c-keyword">downto</span> <span class="c-number">4</span> <span class="c-keyword">do</span>
+  <span class="c-var">arr</span>[<span class="c-var">i</span>+<span class="c-number">1</span>] := <span class="c-var">arr</span>[<span class="c-var">i</span>];
+<span class="c-comment">// Then insert the new value</span>
+<span class="c-var">arr</span>[<span class="c-number">4</span>] := <span class="c-var">newValue</span>;
+          </div>
+        </div>
+        <div>
+          <div class="tag tag-orange">DELETE from position 3</div>
+          <div class="code-block" style="font-size:12px;">
+<span class="c-comment">// Shift left (4th position first)</span>
+<span class="c-keyword">for</span> <span class="c-var">i</span> := <span class="c-number">3</span> <span class="c-keyword">to</span> <span class="c-number">9</span> <span class="c-keyword">do</span>
+  <span class="c-var">arr</span>[<span class="c-var">i</span>] := <span class="c-var">arr</span>[<span class="c-var">i</span>+<span class="c-number">1</span>];
+<span class="c-comment">// Display only first 9 elements</span>
+          </div>
+        </div>
+      </div>
+      <div class="warning-box">Never start shifting from the insert position — you'll overwrite existing values!</div>
+    </div>
+  </div>
+
+  <!-- ===================== UNIT 2 ===================== -->
+  <div id="unit2" class="section">
+    <div class="section-title">Unit 3.2 – Searching & Sorting Arrays</div>
+    <p class="section-intro">When working with large data, you need to find and organise elements efficiently. This unit covers two search methods and two sort algorithms.</p>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">🔍</span> Linear Search</div>
+      <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:16px;">The <strong>linear search</strong> loops through each element from the beginning until the target is found or the end is reached. Best for <em>unsorted</em> or small arrays.</p>
+      <div class="code-block">
+<span class="c-var">i</span> := <span class="c-number">1</span>;   <span class="c-var">iPos</span> := <span class="c-number">0</span>;   <span class="c-var">bFlag</span> := <span class="c-keyword">false</span>;
+<span class="c-var">sSearch</span> := <span class="c-func">InputBox</span>(<span class="c-string">'Search'</span>, <span class="c-string">'Enter name'</span>, <span class="c-string">''</span>);
+
+<span class="c-keyword">while</span> (<span class="c-var">i</span> &lt;= <span class="c-number">10</span>) <span class="c-keyword">and</span> (<span class="c-var">bFlag</span> = <span class="c-keyword">false</span>) <span class="c-keyword">do</span>
+<span class="c-keyword">begin</span>
+  <span class="c-keyword">if</span> <span class="c-var">arrNames</span>[<span class="c-var">i</span>] = <span class="c-var">sSearch</span> <span class="c-keyword">then</span>
+  <span class="c-keyword">begin</span>
+    <span class="c-var">bFlag</span> := <span class="c-keyword">true</span>;
+    <span class="c-var">iPos</span> := <span class="c-var">i</span>;
+  <span class="c-keyword">end</span>;
+  <span class="c-func">inc</span>(<span class="c-var">i</span>);
+<span class="c-keyword">end</span>;
+
+<span class="c-keyword">if</span> <span class="c-var">bFlag</span> = <span class="c-keyword">true</span> <span class="c-keyword">then</span>
+  <span class="c-func">memDisplay</span>.<span class="c-func">Lines</span>.<span class="c-func">Add</span>(<span class="c-string">'Found at position: '</span> + <span class="c-func">IntToStr</span>(<span class="c-var">iPos</span>))
+<span class="c-keyword">else</span>
+  <span class="c-func">memDisplay</span>.<span class="c-func">Lines</span>.<span class="c-func">Add</span>(<span class="c-var">sSearch</span> + <span class="c-string">' not found'</span>);
+      </div>
+      <div class="note-box">Use a <strong>Boolean flag</strong> (bFlag) and a <strong>position variable</strong> (iPos) to track search results. The loop exits as soon as the item is found!</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">🎯</span> Binary Search</div>
+      <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:16px;">Binary search is much faster for <em>sorted</em> arrays. It repeatedly halves the search range until the target is found. For 10 000 elements, linear search may need 10 000 checks — binary search needs at most <strong>14</strong>!</p>
+      <div class="def-box">
+        <strong>How it works:</strong> Find the midpoint. If the target equals mid, done! If the target is greater than mid, search the RIGHT half. If less, search the LEFT half. Repeat until found or range is empty.
+      </div>
+      <div class="code-block">
+<span class="c-comment">// Array must be SORTED first!</span>
+<span class="c-var">lowerBound</span> := <span class="c-number">1</span>;
+<span class="c-var">upperBound</span> := <span class="c-func">Length</span>(<span class="c-var">arrNumbers</span>);
+<span class="c-var">bFound</span> := <span class="c-keyword">false</span>;
+
+<span class="c-keyword">while</span> (<span class="c-var">bFound</span> = <span class="c-keyword">false</span>) <span class="c-keyword">and</span> (<span class="c-var">lowerBound</span> &lt;= <span class="c-var">upperBound</span>) <span class="c-keyword">do</span>
+<span class="c-keyword">begin</span>
+  <span class="c-var">mid</span> := (<span class="c-var">lowerBound</span> + <span class="c-var">upperBound</span>) <span class="c-keyword">div</span> <span class="c-number">2</span>;
+  <span class="c-keyword">if</span> <span class="c-var">searchValue</span> = <span class="c-var">arrNumbers</span>[<span class="c-var">mid</span>] <span class="c-keyword">then</span>
+    <span class="c-var">bFound</span> := <span class="c-keyword">true</span>
+  <span class="c-keyword">else if</span> <span class="c-var">searchValue</span> &gt; <span class="c-var">arrNumbers</span>[<span class="c-var">mid</span>] <span class="c-keyword">then</span>
+    <span class="c-var">lowerBound</span> := <span class="c-var">mid</span> + <span class="c-number">1</span>   <span class="c-comment">// Search RIGHT half</span>
+  <span class="c-keyword">else</span>
+    <span class="c-var">upperBound</span> := <span class="c-var">mid</span> - <span class="c-number">1</span>;  <span class="c-comment">// Search LEFT half</span>
+<span class="c-keyword">end</span>;
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">🫧</span> Bubble Sort</div>
+      <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:16px;">Bubble sort <strong>compares adjacent elements</strong> and swaps them if they are in the wrong order. The smallest (or largest) element "bubbles" to its final position after each pass.</p>
+      <div class="code-block">
+<span class="c-comment">// Bubble Sort – Descending Order</span>
+<span class="c-keyword">for</span> <span class="c-var">i</span> := <span class="c-func">Length</span>(<span class="c-var">arr</span>)-<span class="c-number">1</span> <span class="c-keyword">downto</span> <span class="c-number">1</span> <span class="c-keyword">do</span>
+  <span class="c-keyword">for</span> <span class="c-var">j</span> := <span class="c-number">1</span> <span class="c-keyword">to</span> <span class="c-var">i</span> <span class="c-keyword">do</span>
+    <span class="c-keyword">if</span> <span class="c-var">arr</span>[<span class="c-var">j</span>] &lt; <span class="c-var">arr</span>[<span class="c-var">j</span>+<span class="c-number">1</span>] <span class="c-keyword">then</span>  <span class="c-comment">// swap if smaller comes before larger</span>
+    <span class="c-keyword">begin</span>
+      <span class="c-var">iTemp</span> := <span class="c-var">arr</span>[<span class="c-var">j</span>];
+      <span class="c-var">arr</span>[<span class="c-var">j</span>] := <span class="c-var">arr</span>[<span class="c-var">j</span>+<span class="c-number">1</span>];
+      <span class="c-var">arr</span>[<span class="c-var">j</span>+<span class="c-number">1</span>] := <span class="c-var">iTemp</span>;
+    <span class="c-keyword">end</span>;
+
+<span class="c-comment">// Bubble Sort with Flag (more efficient – stops early if sorted!)</span>
+<span class="c-keyword">repeat</span>
+  <span class="c-var">bFlag</span> := <span class="c-keyword">true</span>;   <span class="c-comment">// assume sorted</span>
+  <span class="c-keyword">for</span> <span class="c-var">j</span> := <span class="c-number">1</span> <span class="c-keyword">to</span> <span class="c-number">9</span> <span class="c-keyword">do</span>
+    <span class="c-keyword">if</span> <span class="c-var">arr</span>[<span class="c-var">j</span>] &gt; <span class="c-var">arr</span>[<span class="c-var">j</span>+<span class="c-number">1</span>] <span class="c-keyword">then</span>  <span class="c-comment">// swap</span>
+    <span class="c-keyword">begin</span>
+      <span class="c-var">iTemp</span> := <span class="c-var">arr</span>[<span class="c-var">j</span>]; <span class="c-var">arr</span>[<span class="c-var">j</span>] := <span class="c-var">arr</span>[<span class="c-var">j</span>+<span class="c-number">1</span>]; <span class="c-var">arr</span>[<span class="c-var">j</span>+<span class="c-number">1</span>] := <span class="c-var">iTemp</span>;
+      <span class="c-var">bFlag</span> := <span class="c-keyword">false</span>;  <span class="c-comment">// swapping occurred – not yet sorted</span>
+    <span class="c-keyword">end</span>;
+<span class="c-keyword">until</span> <span class="c-var">bFlag</span> = <span class="c-keyword">true</span>;
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">🎯</span> Selection Sort</div>
+      <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:16px;">Selection sort selects the element that <em>should go in each position</em> and places it there. It compares element at position 1 with every other element, swapping when needed.</p>
+      <div class="code-block">
+<span class="c-comment">// Selection Sort – Ascending Order</span>
+<span class="c-keyword">for</span> <span class="c-var">i</span> := <span class="c-number">1</span> <span class="c-keyword">to</span> <span class="c-number">4</span> <span class="c-keyword">do</span>
+  <span class="c-keyword">for</span> <span class="c-var">j</span> := <span class="c-var">i</span>+<span class="c-number">1</span> <span class="c-keyword">to</span> <span class="c-number">5</span> <span class="c-keyword">do</span>
+    <span class="c-keyword">if</span> <span class="c-var">arr</span>[<span class="c-var">i</span>] &gt; <span class="c-var">arr</span>[<span class="c-var">j</span>] <span class="c-keyword">then</span>  <span class="c-comment">// if out of order, swap</span>
+    <span class="c-keyword">begin</span>
+      <span class="c-var">iTemp</span> := <span class="c-var">arr</span>[<span class="c-var">i</span>];
+      <span class="c-var">arr</span>[<span class="c-var">i</span>] := <span class="c-var">arr</span>[<span class="c-var">j</span>];
+      <span class="c-var">arr</span>[<span class="c-var">j</span>] := <span class="c-var">iTemp</span>;
+    <span class="c-keyword">end</span>;
+      </div>
+      <div class="note-box"><strong>Tip:</strong> You only need to apply ONE sorting algorithm in your practical assessments. Choose bubble sort with flag as it's the most efficient of the two!</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">📊</span> Algorithm Comparison</div>
+      <table>
+        <tr><th>Algorithm</th><th>Type</th><th>Requires Sorted?</th><th>Efficiency</th></tr>
+        <tr><td>Linear Search</td><td>Search</td><td>No</td><td>Slow for large arrays</td></tr>
+        <tr><td>Binary Search</td><td>Search</td><td>YES</td><td>Very fast (halves range)</td></tr>
+        <tr><td>Bubble Sort</td><td>Sort</td><td>N/A</td><td>Moderate (improves with flag)</td></tr>
+        <tr><td>Selection Sort</td><td>Sort</td><td>N/A</td><td>Least efficient (no early exit)</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===================== UNIT 3 ===================== -->
+  <div id="unit3" class="section">
+    <div class="section-title">Unit 3.3 – Parallel Arrays</div>
+    <p class="section-intro">Parallel arrays store <em>related information of different data types</em> in separate arrays, linked by their <strong>index position</strong>. If arrNames[3] = 'Peter', then arrMarks[3] = Peter's mark.</p>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">🔗</span> What Are Parallel Arrays?</div>
+      <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:16px;">You cannot mix data types in one array. Use two (or more) arrays where index positions correspond:</p>
+      <div class="parallel-wrap">
+        <div class="pa-label">arrNames (String):</div>
+        <div class="array-visual" id="pa-names"></div>
+        <div class="pa-label">arrMarks (Integer):</div>
+        <div class="array-visual" id="pa-marks"></div>
+      </div>
+      <div class="note-box" style="margin-top:16px;"><strong>arrNames[3]</strong> = 'Peter' and <strong>arrMarks[3]</strong> = 91 — they are linked by position 3! Click a cell above to see the link.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">🔎</span> Searching Parallel Arrays</div>
+      <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:12px;">Search one array, use the found index to get data from the other:</p>
+      <div class="code-block">
+<span class="c-var">sSearch</span> := <span class="c-func">InputBox</span>(<span class="c-string">'Name'</span>, <span class="c-string">'Enter name'</span>, <span class="c-string">''</span>);
+<span class="c-var">i</span> := <span class="c-number">1</span>; <span class="c-var">iPos</span> := <span class="c-number">0</span>; <span class="c-var">bFlag</span> := <span class="c-keyword">false</span>;
+
+<span class="c-keyword">while</span> (<span class="c-var">i</span> &lt;= <span class="c-number">10</span>) <span class="c-keyword">and</span> (<span class="c-var">bFlag</span> = <span class="c-keyword">false</span>) <span class="c-keyword">do</span>
+<span class="c-keyword">begin</span>
+  <span class="c-keyword">if</span> <span class="c-var">arrNames</span>[<span class="c-var">i</span>] = <span class="c-var">sSearch</span> <span class="c-keyword">then</span>
+  <span class="c-keyword">begin</span>
+    <span class="c-var">bFlag</span> := <span class="c-keyword">true</span>;  <span class="c-var">iPos</span> := <span class="c-var">i</span>;
+  <span class="c-keyword">end</span>;
+  <span class="c-func">inc</span>(<span class="c-var">i</span>);
+<span class="c-keyword">end</span>;
+
+<span class="c-keyword">if</span> <span class="c-var">bFlag</span> = <span class="c-keyword">true</span> <span class="c-keyword">then</span>
+  <span class="c-func">memDisplay</span>.<span class="c-func">Lines</span>.<span class="c-func">Add</span>(<span class="c-string">'Mark: '</span> + <span class="c-func">IntToStr</span>(<span class="c-var">arrMarks</span>[<span class="c-var">iPos</span>]))
+<span class="c-comment">// Use the SAME iPos to access the parallel array!</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">🔃</span> Sorting Parallel Arrays</div>
+      <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:12px;">When sorting, you <strong>must swap both arrays simultaneously</strong>, otherwise the data gets mislinked!</p>
+      <div class="code-block">
+<span class="c-keyword">for</span> <span class="c-var">i</span> := <span class="c-number">1</span> <span class="c-keyword">to</span> <span class="c-number">4</span> <span class="c-keyword">do</span>
+  <span class="c-keyword">for</span> <span class="c-var">j</span> := <span class="c-var">i</span>+<span class="c-number">1</span> <span class="c-keyword">to</span> <span class="c-number">5</span> <span class="c-keyword">do</span>
+    <span class="c-keyword">if</span> <span class="c-var">arrMarks</span>[<span class="c-var">i</span>] &lt; <span class="c-var">arrMarks</span>[<span class="c-var">j</span>] <span class="c-keyword">then</span>  <span class="c-comment">// sort marks descending</span>
+    <span class="c-keyword">begin</span>
+      <span class="c-comment">// Swap marks</span>
+      <span class="c-var">iTemp</span> := <span class="c-var">arrMarks</span>[<span class="c-var">i</span>]; <span class="c-var">arrMarks</span>[<span class="c-var">i</span>] := <span class="c-var">arrMarks</span>[<span class="c-var">j</span>]; <span class="c-var">arrMarks</span>[<span class="c-var">j</span>] := <span class="c-var">iTemp</span>;
+      <span class="c-comment">// Swap names too! (keep them linked)</span>
+      <span class="c-var">sTemp</span> := <span class="c-var">arrNames</span>[<span class="c-var">i</span>]; <span class="c-var">arrNames</span>[<span class="c-var">i</span>] := <span class="c-var">arrNames</span>[<span class="c-var">j</span>]; <span class="c-var">arrNames</span>[<span class="c-var">j</span>] := <span class="c-var">sTemp</span>;
+    <span class="c-keyword">end</span>;
+      </div>
+      <div class="warning-box">If you only sort one array and forget the parallel array, the names and marks will become mismatched! Always swap both.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">🎬</span> Real World Example – Box Office</div>
+      <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:12px;">From your practical book: A cinema stores movies and ticket sales in parallel arrays. This is a typical exam scenario!</p>
+      <div class="code-block">
+<span class="c-comment">// Two parallel arrays declared globally:</span>
+<span class="c-keyword">const</span>
+  <span class="c-var">arrMovies</span>: <span class="c-keyword">array</span>[<span class="c-number">1</span>..<span class="c-number">5</span>] <span class="c-keyword">of</span> <span class="c-type">String</span> = (<span class="c-string">'Dune'</span>,<span class="c-string">'Avatar'</span>,<span class="c-string">'Barbie'</span>,<span class="c-string">'Oppenheimer'</span>,<span class="c-string">'Elemental'</span>);
+  <span class="c-var">arrTickets</span>: <span class="c-keyword">array</span>[<span class="c-number">1</span>..<span class="c-number">5</span>] <span class="c-keyword">of</span> <span class="c-type">Integer</span> = (<span class="c-number">340</span>, <span class="c-number">521</span>, <span class="c-number">489</span>, <span class="c-number">412</span>, <span class="c-number">198</span>);
+
+<span class="c-comment">// Block Adjust: Add 100 sponsored tickets to ALL movies</span>
+<span class="c-keyword">for</span> <span class="c-var">i</span> := <span class="c-number">1</span> <span class="c-keyword">to</span> <span class="c-number">5</span> <span class="c-keyword">do</span>
+  <span class="c-var">arrTickets</span>[<span class="c-var">i</span>] := <span class="c-var">arrTickets</span>[<span class="c-var">i</span>] + <span class="c-number">100</span>;
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== SIMULATOR ===================== -->
+  <div id="simulator" class="section">
+    <div class="section-title">⚙️ Algorithm Lab</div>
+    <p class="section-intro">Watch the algorithms run in real time! Generate an array, then apply searches and sorts to see exactly what happens step by step.</p>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">🎲</span> Your Array</div>
+      <div class="sim-controls">
+        <button class="btn btn-primary" onclick="generateArray()">Generate Array</button>
+        <span style="color:var(--muted);font-size:13px;align-self:center;font-family:'Space Mono',monospace;">10 random numbers (10–99)</span>
+      </div>
+      <div style="padding-top:28px;" id="sim-array-wrap">
+        <div class="array-visual" id="sim-array"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">🔍</span> Linear Search</div>
+      <div class="sim-controls">
+        <input type="number" id="linear-val" placeholder="Value" min="10" max="99">
+        <button class="btn btn-primary" onclick="linearSearch()">Search</button>
+      </div>
+      <div class="sim-log" id="linear-log">Generate an array and enter a value to search...</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">🎯</span> Binary Search</div>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:14px;">Note: Array will be sorted first (binary search requires sorted array)</p>
+      <div class="sim-controls">
+        <input type="number" id="binary-val" placeholder="Value" min="10" max="99">
+        <button class="btn btn-orange" onclick="binarySearch()">Binary Search</button>
+      </div>
+      <div class="sim-log" id="binary-log">Generate an array and enter a value to binary search...</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">🫧</span> Bubble Sort</div>
+      <div class="sim-controls">
+        <button class="btn btn-orange" onclick="bubbleSortViz()">Bubble Sort (Ascending)</button>
+      </div>
+      <div class="sim-log" id="bubble-log">Generate an array then click to sort...</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="card-icon">🎯</span> Selection Sort</div>
+      <div class="sim-controls">
+        <button class="btn btn-purple" onclick="selectionSortViz()">Selection Sort (Ascending)</button>
+      </div>
+      <div class="sim-log" id="selection-log">Generate an array then click to sort...</div>
+    </div>
+  </div>
+
+  <!-- ===================== QUIZ ===================== -->
+  <div id="quiz" class="section">
+    <div class="section-title">🧠 Knowledge Check</div>
+    <p class="section-intro">Test your understanding of Chapter 3! Answer all questions and see your score.</p>
+    <div class="score-display" id="score-display">Score: 0 / 10</div>
+    <div class="score-bar"><div class="score-fill" id="score-fill" style="width:0%"></div></div>
+    <div id="quiz-container"></div>
+  </div>
+
+  <!-- ===================== GLOSSARY ===================== -->
+  <div id="glossary" class="section">
+    <div class="section-title">📖 Key Terms & Definitions</div>
+    <p class="section-intro">Your essential vocabulary for Chapter 3 — know these for your theory exam!</p>
+    <div class="glossary-grid" id="glossary-grid"></div>
+  </div>
+
+</div>
+
+<div class="footer container">
+  Grade 11 Information Technology • Chapter 3: Arrays • Based on the IT Practical Book & CAPS Curriculum
+</div>
+
+<script>
+// ===== DATA =====
+const vizNames = ['Arhaan','Joyce','Peter','Andile','Zinhle'];
+const vizVals = [56, 78, 91, 65, 81];
+let simArr = [];
+
+// ===== TABS =====
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ===== ARRAY VISUALISER =====
+function buildVizArray() {
+  const c = document.getElementById('viz-array');
+  c.innerHTML = '';
+  vizNames.forEach((name, idx) => {
+    const cell = document.createElement('div');
+    cell.className = 'array-cell';
+    cell.innerHTML = `<span class="array-index">[${idx+1}]</span><div class="array-value">${name}</div>`;
+    cell.onclick = () => {
+      document.querySelectorAll('#viz-array .array-cell').forEach(x => x.classList.remove('highlight'));
+      cell.classList.add('highlight');
+      document.getElementById('viz-info').innerHTML = `<span style="color:var(--accent1)">arrNames[${idx+1}]</span> = <span style="color:var(--accent4)">'${name}'</span> &nbsp;|&nbsp; Index position: <span style="color:var(--accent2)">${idx+1}</span>`;
+    };
+    c.appendChild(cell);
+  });
+}
+
+function buildParallelArrays() {
+  const nc = document.getElementById('pa-names');
+  const mc = document.getElementById('pa-marks');
+  if (!nc || !mc) return;
+  nc.innerHTML = ''; mc.innerHTML = '';
+  vizNames.forEach((name, idx) => {
+    const nc2 = document.createElement('div');
+    nc2.className = 'array-cell';
+    nc2.innerHTML = `<span class="array-index">[${idx+1}]</span><div class="array-value" style="font-size:12px">${name}</div>`;
+    nc2.onclick = () => {
+      document.querySelectorAll('#pa-names .array-cell, #pa-marks .array-cell').forEach(x=>x.classList.remove('highlight'));
+      document.querySelectorAll(`#pa-names .array-cell:nth-child(${idx+1}), #pa-marks .array-cell:nth-child(${idx+1})`).forEach(x=>x.classList.add('highlight'));
+    };
+    nc.appendChild(nc2);
+
+    const mc2 = document.createElement('div');
+    mc2.className = 'array-cell';
+    mc2.innerHTML = `<span class="array-index">[${idx+1}]</span><div class="array-value">${vizVals[idx]}</div>`;
+    mc2.onclick = nc2.onclick;
+    mc.appendChild(mc2);
+  });
+}
+
+// ===== SIM ARRAY =====
+function generateArray() {
+  simArr = Array.from({length:10}, () => Math.floor(Math.random()*90)+10);
+  renderSimArray(simArr, [], -1);
+  clearLogs();
+}
+
+function renderSimArray(arr, highlights, found) {
+  const c = document.getElementById('sim-array');
+  c.innerHTML = '';
+  arr.forEach((v, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'array-cell';
+    if (i === found) cell.classList.add('found');
+    else if (highlights.includes(i)) cell.classList.add('searching');
+    cell.innerHTML = `<span class="array-index">[${i+1}]</span><div class="array-value">${v}</div>`;
+    c.appendChild(cell);
+  });
+}
+
+function clearLogs() {
+  ['linear-log','binary-log','bubble-log','selection-log'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.innerHTML = '';
+  });
+}
+
+function log(logId, msg, cls='') {
+  const el = document.getElementById(logId);
+  if(!el) return;
+  el.innerHTML += `<div class="${cls}">${msg}</div>`;
+  el.scrollTop = el.scrollHeight;
+}
+
+function linearSearch() {
+  if (!simArr.length) { alert('Generate an array first!'); return; }
+  const val = parseInt(document.getElementById('linear-val').value);
+  if (isNaN(val)) { alert('Enter a number to search for!'); return; }
+  const el = document.getElementById('linear-log');
+  el.innerHTML = `<span class="log-info">🔍 Linear Search for value: ${val}</span>\n`;
+  let found = -1;
+  for (let i = 0; i < simArr.length; i++) {
+    const checking = `Checking index [${i+1}]: ${simArr[i]}`;
+    renderSimArray(simArr, [i], found);
+    if (simArr[i] === val) {
+      found = i;
+      log('linear-log', `✅ ${checking} → FOUND at position [${i+1}]!`, 'log-found');
+      renderSimArray(simArr, [], i);
+      break;
+    } else {
+      log('linear-log', `${checking} → not a match`, 'log-check');
+    }
+  }
+  if (found === -1) log('linear-log', `❌ Value ${val} not found in array.`);
+}
+
+function binarySearch() {
+  if (!simArr.length) { alert('Generate an array first!'); return; }
+  const val = parseInt(document.getElementById('binary-val').value);
+  if (isNaN(val)) { alert('Enter a number to search for!'); return; }
+  const sorted = [...simArr].sort((a,b)=>a-b);
+  simArr = sorted;
+  renderSimArray(simArr, [], -1);
+  const el = document.getElementById('binary-log');
+  el.innerHTML = `<span class="log-info">🎯 Binary Search (array sorted ascending)</span>\n`;
+  log('binary-log', `Searching for: ${val}`, 'log-info');
+  let lo = 0, hi = sorted.length - 1;
+  let steps = 0;
+  while (lo <= hi) {
+    steps++;
+    const mid = Math.floor((lo + hi) / 2);
+    renderSimArray(sorted, [mid], -1);
+    log('binary-log', `Step ${steps}: Range [${lo+1}..${hi+1}] | Mid=[${mid+1}] value=${sorted[mid]}`, 'log-check');
+    if (sorted[mid] === val) {
+      renderSimArray(sorted, [], mid);
+      log('binary-log', `✅ FOUND ${val} at position [${mid+1}] in ${steps} step(s)!`, 'log-found');
+      return;
+    } else if (val > sorted[mid]) {
+      log('binary-log', `  → ${val} > ${sorted[mid]}, search RIGHT half`, 'log-swap');
+      lo = mid + 1;
+    } else {
+      log('binary-log', `  → ${val} < ${sorted[mid]}, search LEFT half`, 'log-swap');
+      hi = mid - 1;
+    }
+  }
+  log('binary-log', `❌ Value ${val} not found.`);
+}
+
+function bubbleSortViz() {
+  if (!simArr.length) { alert('Generate an array first!'); return; }
+  const arr = [...simArr];
+  const el = document.getElementById('bubble-log');
+  el.innerHTML = `<span class="log-info">🫧 Bubble Sort – Ascending Order</span>\n`;
+  let swaps = 0;
+  for (let i = arr.length - 1; i > 0; i--) {
+    let sorted = true;
+    for (let j = 0; j < i; j++) {
+      if (arr[j] > arr[j+1]) {
+        [arr[j], arr[j+1]] = [arr[j+1], arr[j]];
+        swaps++;
+        log('bubble-log', `Swap: arr[${j+1}] ↔ arr[${j+2}] → [${arr.join(', ')}]`, 'log-swap');
+        sorted = false;
+      }
+    }
+    if (sorted) { log('bubble-log', `Array sorted early (flag triggered)`, 'log-found'); break; }
+  }
+  simArr = arr;
+  renderSimArray(arr, [], -1);
+  log('bubble-log', `✅ Done! Total swaps: ${swaps}. Sorted: [${arr.join(', ')}]`, 'log-found');
+}
+
+function selectionSortViz() {
+  if (!simArr.length) { alert('Generate an array first!'); return; }
+  const arr = [...simArr];
+  const el = document.getElementById('selection-log');
+  el.innerHTML = `<span class="log-info">🎯 Selection Sort – Ascending Order</span>\n`;
+  let swaps = 0;
+  for (let i = 0; i < arr.length - 1; i++) {
+    for (let j = i + 1; j < arr.length; j++) {
+      if (arr[i] > arr[j]) {
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+        swaps++;
+        log('selection-log', `Compare pos[${i+1}] vs pos[${j+1}] → Swap → [${arr.join(', ')}]`, 'log-swap');
+      }
+    }
+  }
+  simArr = arr;
+  renderSimArray(arr, [], -1);
+  log('selection-log', `✅ Done! Total swaps: ${swaps}. Sorted: [${arr.join(', ')}]`, 'log-found');
+}
+
+// ===== QUIZ =====
+const quizData = [
+  { q: "What is an array in Delphi?", opts: ["A variable that stores one value","A data structure that stores multiple values of the same type linked to a single variable name","A function that returns multiple values","A type of loop"], ans: 1, fb: "An array stores multiple values of the SAME type (homogeneous) under one variable name. Elements are accessed by their index position." },
+  { q: "How do you declare an integer array called arrScores with positions 1 to 10 in Delphi?", opts: ["arrScores: array(1,10) of Integer;","arrScores: Integer[1..10];","arrScores: array[1..10] of Integer;","var arrScores[10]: Integer;"], ans: 2, fb: "The correct syntax is: arrayName: array[StartIndex..LastIndex] of DataType. Square brackets are used for the index range!" },
+  { q: "What does arrNames[4] refer to?", opts: ["The 4th element of the array","An array of 4 elements","The value 4 in the array","An array named '4'"], ans: 0, fb: "arrNames[4] refers to the element at index position 4 — the 4th element stored in the array." },
+  { q: "A linear search loops through elements from the start. When does it stop?", opts: ["Always checks every element","When the value is found OR the last index is reached","After 10 comparisons","When bFlag is TRUE and the array is sorted"], ans: 1, fb: "Linear search uses a WHILE loop that exits as soon as the value is found (bFlag := true) OR when all elements have been checked without success." },
+  { q: "Which sorting/searching algorithm REQUIRES the array to be sorted first?", opts: ["Linear Search","Bubble Sort","Selection Sort","Binary Search"], ans: 3, fb: "Binary Search requires a sorted array! It works by eliminating half the search range each time — this only works correctly on sorted data." },
+  { q: "In bubble sort descending order, when do you swap two adjacent elements?", opts: ["When arr[j] > arr[j+1]","When arr[j] < arr[j+1]","When arr[j] = arr[j+1]","When j > i"], ans: 1, fb: "To sort DESCENDING, you want larger values first. If arr[j] < arr[j+1], the smaller value is before the larger one — so swap them!" },
+  { q: "You have arrNames and arrMarks as parallel arrays. What is CRITICAL when sorting arrMarks?", opts: ["Only sort arrMarks","Sort arrNames first","Swap BOTH arrays simultaneously so they stay linked","Use a different variable for each array"], ans: 2, fb: "When sorting parallel arrays, you must swap BOTH arrays every time you make a swap — otherwise the names and marks get mismatched!" },
+  { q: "Which statement correctly accesses element at position 7 of arrScores?", opts: ["arrScores(7)","arrScores.7","arrScores{7}","arrScores[7]"], ans: 3, fb: "In Delphi, array elements are accessed using SQUARE BRACKETS: arrScores[7]. Parentheses () are for function calls, not array indexing." },
+  { q: "What is the main advantage of binary search over linear search?", opts: ["It works on unsorted arrays","It uses less memory","It's much faster for large sorted arrays — it halves the search range each time","It can find duplicate values"], ans: 2, fb: "Binary search is far more efficient for large arrays. For 10 000 elements, linear search may need 10 000 comparisons while binary search needs at most 14!" },
+  { q: "When inserting a new element at position 4 in an array, which direction do you shift existing elements?", opts: ["Left, starting from position 4","Right, starting from the LAST element","Right, starting from position 4","Left, starting from the LAST element"], ans: 1, fb: "Always shift RIGHT starting from the LAST element when inserting. If you shift from position 4 first, you'll overwrite existing values and lose data!" },
+];
+
+let score = 0;
+let answered = 0;
+
+function buildQuiz() {
+  const c = document.getElementById('quiz-container');
+  c.innerHTML = '';
+  quizData.forEach((q, qi) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-q';
+    div.innerHTML = `
+      <div class="quiz-q-text"><span style="color:var(--muted);font-size:13px;font-family:'Space Mono',monospace">Q${qi+1}. </span>${q.q}</div>
+      <div class="quiz-options">
+        ${q.opts.map((o,oi) => `<button class="quiz-opt" onclick="answer(${qi},${oi})">${o}</button>`).join('')}
+      </div>
+      <div class="quiz-feedback" id="fb-${qi}"></div>
+    `;
+    c.appendChild(div);
+  });
+}
+
+function answer(qi, oi) {
+  const q = quizData[qi];
+  const opts = document.querySelectorAll(`.quiz-q:nth-child(${qi+1}) .quiz-opt`);
+  opts.forEach(o => o.disabled = true);
+  const fb = document.getElementById(`fb-${qi}`);
+  if (oi === q.ans) {
+    opts[oi].classList.add('correct');
+    fb.className = 'quiz-feedback show correct-fb';
+    fb.textContent = '✅ Correct! ' + q.fb;
+    score++;
+    answered++;
+  } else {
+    opts[oi].classList.add('wrong');
+    opts[q.ans].classList.add('correct');
+    fb.className = 'quiz-feedback show wrong-fb';
+    fb.textContent = '❌ Not quite. ' + q.fb;
+    answered++;
+  }
+  document.getElementById('score-display').textContent = `Score: ${score} / ${quizData.length}`;
+  document.getElementById('score-fill').style.width = `${(score/quizData.length)*100}%`;
+}
+
+// ===== GLOSSARY =====
+const glossaryData = [
+  { term: 'Array', color: 'var(--accent1)', def: 'A data structure that stores a set of values (elements) of the same type (homogeneous) linked to a single variable name.' },
+  { term: 'Index', color: 'var(--accent2)', def: 'The position of an element in an array. Used in square brackets to access a specific element, e.g. arrNames[3].' },
+  { term: 'Homogeneous', color: 'var(--accent3)', def: 'All elements in an array must be of the same data type (all integers, all strings, etc.).' },
+  { term: 'Linear Search', color: 'var(--accent4)', def: 'A search method that checks every element in the array sequentially from the beginning until the value is found or the end is reached.' },
+  { term: 'Binary Search', color: 'var(--accent1)', def: 'An efficient search algorithm that repeatedly halves the search range. Requires the array to be sorted first.' },
+  { term: 'Bubble Sort', color: 'var(--accent2)', def: 'A sorting algorithm that compares adjacent elements and swaps them if in the wrong order. The smallest/largest element "bubbles" to its position.' },
+  { term: 'Selection Sort', color: 'var(--accent3)', def: 'Selects the correct element for each position by comparing the element at that position with every remaining element.' },
+  { term: 'Parallel Arrays', color: 'var(--accent4)', def: 'Two or more arrays that store related data of different types, linked by their index position.' },
+  { term: 'bFlag', color: 'var(--accent1)', def: 'A Boolean variable used in searching. Set to TRUE when an element is found. Controls the while loop termination.' },
+  { term: 'iPos', color: 'var(--accent2)', def: 'An integer variable that stores the index position where a searched value was found in the array.' },
+  { term: 'iTemp', color: 'var(--accent3)', def: 'A temporary variable used to hold a value during a swap operation in sorting algorithms.' },
+  { term: 'Length()', color: 'var(--accent4)', def: 'A built-in method that returns the number of elements in an array. Used in loops: for i := 1 to Length(arr) do.' },
+];
+
+function buildGlossary() {
+  const c = document.getElementById('glossary-grid');
+  glossaryData.forEach(g => {
+    const div = document.createElement('div');
+    div.className = 'glossary-item';
+    div.innerHTML = `<div class="glossary-term" style="color:${g.color}">${g.term}</div><div class="glossary-def">${g.def}</div>`;
+    c.appendChild(div);
+  });
+}
+
+// ===== INIT =====
+buildVizArray();
+buildParallelArrays();
+buildQuiz();
+buildGlossary();
+</script>
+</body>
+</html>
